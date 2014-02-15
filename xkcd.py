@@ -1,8 +1,9 @@
-import urllib.request,os
+import urllib.request,os,random
 print('Romance,Sarcasm,Math and Language\nWelcome to xkcd Downloader 1.0\n\nAccepted Inputs :')
 print('all : downloads all xkcd comics from the beginning to the latest one')
 print('first : downloads the first xkcd comic')
 print('latest : downloads the latest xkcd comic')
+print('random : downloads a random xkcd comic')
 print('[Any number] : downloads the xkcd comic of that number',' ','Example:67')
 print('[Range] : downloads the xkcd comics in that range',' ','Example:5-19')
 print('If no input is given : downloads the latest xkcd comic by default')
@@ -59,16 +60,29 @@ if number == 'latest' or number == '':
     f(str(latest()))
 elif number == 'first':
     f(str(1))
+elif number == '404':
+    print('Error 404:Comic Not Found')
+elif number == 'random':
+    f(str(random.randint(1, latest())))
 elif number == 'all':
     for o in range(1,latest()):
-        f(str(o))
+        if o != 404:
+            f(str(o))
+        else:
+            print('Error 404:Comic Not Found')
+            o = o+1
+            
 elif position > 0:
     #For the range input
     ll = int(number[0:position])
     ul = int(number[position+1:len(number)])
     if ul>ll and ul <= (latest()) and ll>0:
         for i in range(ll,ul):
-            f(str(i))
+            if i != 404:
+                f(str(i))
+            else:
+                print('Error 404:Comic Not Found')
+                i=i+1
             
     elif ul>(latest()) or ll <=0:
         print('Invalid range ...')
