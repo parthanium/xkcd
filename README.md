@@ -7,7 +7,7 @@ Romance,Sarcasm,Math and Language
 A Python 3.3 script to download xkcd comics.
 
 <h2>Introduction:</h2>
-xkcd Downloader is a very simple Python script I developed to kill time. Built on Python 3.3 it only depends on one module i.e. <code>urllib</code>, which too is a standard Python installation module.
+xkcd Downloader is a very simple Python script I developed to kill time. Built on Python 3.3 it only depends on standard Python installation modules i.e. <code>urllib</code> and <code>os</code>
 <h2>Download and Run:</h2>
 <ul>
 <li>Download this repository and extract it.</li>
@@ -15,6 +15,8 @@ xkcd Downloader is a very simple Python script I developed to kill time. Built o
 <li>Double-click to execute or do it through the command line with the command <code>python xkcd.py</code>.</li>
 <li>You will be greeted with a little introduction and help.</li>
 <li>Give the required input to download the comics in <code>.jpg</code> format.</li>
+<li>You can also specify the directory(complete path) you want to download the comic(s) to.</li>
+<li>If no directory is specified, the comics will be downloaded to the directory of the script</li>
 <li>The comic(s) will be downloaded in the same directory as the script with their respective titles</li>
 <li>Enjoy !
 </ul>
