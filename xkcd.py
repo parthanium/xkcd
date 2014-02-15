@@ -1,11 +1,13 @@
-import urllib.request
+import urllib.request,os
 print('Romance,Sarcasm,Math and Language\nWelcome to xkcd Downloader 1.0\n\nAccepted Inputs :')
 print('all : downloads all xkcd comics from the beginning to the latest one')
 print('first : downloads the first xkcd comic')
 print('latest : downloads the latest xkcd comic')
-print('{Any number} : downloads the xkcd comic of that number',' ','Example:67')
-print('{Range} : downloads the xkcd comics in that range',' ','Example:5-19')
-print('If no input is given : downloads the latest xkcd comic by default\n')
+print('[Any number] : downloads the xkcd comic of that number',' ','Example:67')
+print('[Range] : downloads the xkcd comics in that range',' ','Example:5-19')
+print('If no input is given : downloads the latest xkcd comic by default')
+print('\nYou can also specify the directory(complete path) you want to download the comic(s) to.')
+print('If no directory is specified, the comics will be downloaded to the directory of the script\n')
 def f(n):
     page = 'http://xkcd.com/' + n + '/'
     response = urllib.request.urlopen(page)
@@ -33,8 +35,23 @@ def latest():
     newest = content[ns+28:ne-1]
     return int(newest)
 
-#Taking the input   
+
+#Taking the input
 number = str(input('Enter the xkcd comic number : '))
+#Taking the download directory
+dir = input('Enter the exact download location for the comics : ')
+if dir == '':
+    os.chdir(os.getcwd())
+else:
+    try:
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+            os.chdir(dir)
+        else:
+            os.chdir(dir)
+    except OSError:
+        print('Invalid directory\nSwitching to default')
+    
 #Declaring a variable for the range input
 position = number.find('-')
 
