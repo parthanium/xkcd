@@ -11,7 +11,7 @@ xkcd Downloader is a very simple Python script I developed to kill time. Built o
 <h2>Download and Run:</h2>
 <ul>
 <li>Download this repository and extract it.</li>
-<li>Place the file <code>xkcd.py</code> in the Python installation directory on your drive.</li>
+<li>Place the file <code>xkcd.py</code> in the Python installation directory (<code>Python33</code> by default) on your drive.</li>
 <li>Double-click to execute or do it through the command line with the command <code>python xkcd.py</code>.</li>
 <li>You will be greeted with a little introduction and help.</li>
 <li>Give the required input to download the comics in <code>.jpg</code> format.</li>
