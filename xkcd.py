@@ -61,9 +61,15 @@ if number == 'latest' or number == '':
 elif number == 'first':
     f(str(1))
 elif number == '404':
-    print('Error 404:Comic Not Found')
+    print('Error 404:Comic Not Found\nDownloading latest comic in place')
+    f(str(latest()))
 elif number == 'random':
-    f(str(random.randint(1, latest())))
+    val = str(random.randint(1, latest()))
+    if val == '404':
+        print('Error 404:Comic Not Found\nDownloading latest comic in place')
+        f(str(latest()))
+    else:
+        f(val)
 elif number == 'all':
     for o in range(1,latest()):
         if o != 404:
