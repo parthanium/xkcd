@@ -1,4 +1,4 @@
-import urllib.request,os,random
+import urllib.request,os,random,tkinter.filedialog
 print('Romance,Sarcasm,Math and Language\nWelcome to xkcd Downloader 1.0\n\nAccepted Inputs :')
 print('all : downloads all xkcd comics from the beginning to the latest one')
 print('first : downloads the first xkcd comic')
@@ -7,51 +7,55 @@ print('random : downloads a random xkcd comic')
 print('[Any number] : downloads the xkcd comic of that number',' ','Example:67')
 print('[Range] : downloads the xkcd comics in that range',' ','Example:5-19')
 print('If no input is given : downloads the latest xkcd comic by default')
-print('\nYou can also specify the directory(complete path) you want to download the comic(s) to.')
-print('If no directory is specified, the comics will be downloaded to the directory of the script\n')
+print('\nYou can also specify the directory you want to download the comic(s) to.')
+print('Default directory is the current working directory.\n')
 def f(n):
-    page = 'http://xkcd.com/' + n + '/'
-    response = urllib.request.urlopen(page)
-    text = str(response.read())
-    #Now finding the link of the comic on the page
-    ls = text.find('embedding')
-    le = text.find('<div id="transcript"')
-    link = text[ls+12:le-2]
-    #Now finding the title of the comic
-    ts = text.find('ctitle')
-    te = text.find('<ul class="comicNav"')
-    title = text[ts+8:te-8]
-    img = title + '.jpg'
-    #Now downloading the image
-    print('Now downloading - '+ img)
-    urllib.request.urlretrieve(link,img)
-    print('Done')
+    try:
+        page = 'http://xkcd.com/' + n + '/'
+        response = urllib.request.urlopen(page)
+        text = str(response.read())
+        #Now finding the link of the comic on the page
+        ls = text.find('embedding')
+        le = text.find('<div id="transcript"')
+        link = text[ls+12:le-2]
+        #Now finding the title of the comic
+        ts = text.find('ctitle')
+        te = text.find('<ul class="comicNav"')
+        title = text[ts+8:te-8]
+        img = title + '.jpg'
+        #Now downloading the image
+        print('Now downloading - '+ img)
+        urllib.request.urlretrieve(link,img)
+        print('Done')
+    except urllib.error.URLError:
+        exit()
 
 def latest():
-    new = urllib.request.urlopen('http://xkcd.com')
-    content = str(new.read())
-    #Now finding the latest comic number
-    ns = content.find('this comic:')
-    ne = content.find('<br />\\nImage URL')
-    newest = content[ns+28:ne-1]
-    return int(newest)
+    try:
+        new = urllib.request.urlopen('http://xkcd.com')
+        content = str(new.read())
+        #Now finding the latest comic number
+        ns = content.find('this comic:')
+        ne = content.find('<br />\\nImage URL')
+        newest = content[ns+28:ne-1]
+        return int(newest)
+    except urllib.error.URLError:
+        print('Network Error')
+        print('Try again later')
+        exit()
+        return 0
 
-
+print('Latest comic number : '+ str(latest()) + '\n')
 #Taking the input
 number = str(input('Enter the xkcd comic number : '))
 #Taking the download directory
-dir = input('Enter the exact download location for the comics : ')
-if dir == '':
-    os.chdir(os.getcwd())
-else:
-    try:
-        if not os.path.exists(dir):
-            os.makedirs(dir)
-            os.chdir(dir)
-        else:
-            os.chdir(dir)
-    except OSError:
-        print('Invalid directory\nSwitching to default')
+print('Choose the directory to download the files to : ')
+dir = tkinter.filedialog.askdirectory()
+try:
+    os.chdir(dir)
+except OSError:
+    print('Invalid directory')
+    print('Switching to default ...')
     
 #Declaring a variable for the range input
 position = number.find('-')
