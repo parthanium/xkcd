@@ -21,15 +21,30 @@ def f(n):
         response = urllib.request.urlopen(page)
         text = str(response.read())
         #Now finding the link of the comic on the page
-        ls = text.find('embedding')
-        le = text.find('<div id="transcript"')
-        link = text[ls+12:le-2]
-        #Now finding the title of the comic
-        ts = text.find('ctitle')
-        te = text.find('<ul class="comicNav"')
-        title = text[ts+8:te-8]
-        title = cleanhtml(title)
-        title = re.sub("[/]",'_',title)
+        if n=='404':
+            print("404: comic not found!")
+            link='https://www.explainxkcd.com/wiki/images/9/92/not_found.png'
+            title='404'
+        else:
+            if n=='1037':
+                print("UMWELT")
+                link='https://www.explainxkcd.com/wiki/images/f/ff/umwelt_the_void.jpg'
+            elif n=='1608':
+                print("Hoverboard game - downloading PNG snapshot")
+                link='https://www.explainxkcd.com/wiki/images/4/41/hoverboard.png'
+            elif n=='1663':
+                print("Garden - downloading PNG snapshot")
+                link='https://www.explainxkcd.com/wiki/images/c/ce/garden.png'
+            else:
+                ls = text.find('embedding')
+                le = text.find('<div id="transcript"')
+                link = text[ls+12:le-2]
+            #Now finding the title of the comic
+            ts = text.find('ctitle')
+            te = text.find('<ul class="comicNav"')
+            title = text[ts+8:te-8]
+            title = cleanhtml(title)
+            title = re.sub("[/]",'_',title)
         link=re.sub(re.compile(".*http[s]*://",re.I),'https://',link)
         print("Link: {0}".format(link))
         if link[-4:-3]=='.':
@@ -42,6 +57,7 @@ def f(n):
         urllib.request.urlretrieve(link,img)
         print('Done')
     except urllib.error.URLError:
+        print("URL error")
         exit()
 
 def latest():
@@ -79,23 +95,12 @@ if number == 'latest' or number == '':
     f(str(latest()))
 elif number == 'first':
     f(str(1))
-elif number == '404':
-    print('Error 404:Comic Not Found\nDownloading latest comic in place')
-    f(str(latest()))
 elif number == 'random':
     val = str(random.randint(1, latest()))
-    if val == '404':
-        print('Error 404:Comic Not Found\nDownloading latest comic in place')
-        f(str(latest()))
-    else:
-        f(val)
+    f(str(latest()))
 elif number == 'all':
     for o in range(1,latest()):
-        if o != 404:
-            f(str(o))
-        else:
-            print('Error 404:Comic Not Found')
-            o = o+1
+        f(str(o))
             
 elif position > 0:
     #For the range input
@@ -103,11 +108,7 @@ elif position > 0:
     ul = int(number[position+1:len(number)])
     if ul>ll and ul <= (latest()) and ll>0:
         for i in range(ll,ul+1):
-            if i != 404:
-                f(str(i))
-            else:
-                print('Error 404:Comic Not Found')
-                i=i+1
+            f(str(i))
             
     elif ul>(latest()) or ll <=0:
         print('Invalid range ...')
