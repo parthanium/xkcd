@@ -1,4 +1,5 @@
 import urllib.request,os,random,tkinter.filedialog
+import re
 print('Romance,Sarcasm,Math and Language\nWelcome to xkcd Downloader 1.0\n\nAccepted Inputs :')
 print('all : downloads all xkcd comics from the beginning to the latest one')
 print('first : downloads the first xkcd comic')
@@ -9,6 +10,11 @@ print('[Range] : downloads the xkcd comics in that range',' ','Example:5-19')
 print('If no input is given : downloads the latest xkcd comic by default')
 print('\nYou can also specify the directory you want to download the comic(s) to.')
 print('Default directory is the current working directory.\n')
+def cleanhtml(raw_html):
+    cleanr = re.compile('<.*?>')
+    cleantext = re.sub(cleanr, '', raw_html)
+    return cleantext
+
 def f(n):
     try:
         page = 'http://xkcd.com/' + n + '/'
@@ -22,7 +28,15 @@ def f(n):
         ts = text.find('ctitle')
         te = text.find('<ul class="comicNav"')
         title = text[ts+8:te-8]
-        img = title + '.jpg'
+        title = cleanhtml(title)
+        title = re.sub("[/]",'_',title)
+        link=re.sub(re.compile(".*http[s]*://",re.I),'https://',link)
+        print("Link: {0}".format(link))
+        if link[-4:-3]=='.':
+            ext=link[-4:]
+        else:
+            ext=".jpg"
+        img = "%04d" % int(n) + '-'+ title + ext
         #Now downloading the image
         print('Now downloading - '+ img)
         urllib.request.urlretrieve(link,img)
@@ -37,7 +51,8 @@ def latest():
         #Now finding the latest comic number
         ns = content.find('this comic:')
         ne = content.find('<br />\\nImage URL')
-        newest = content[ns+28:ne-1]
+        newest = re.sub('[^\d]','',content[ns+28:ne-1])
+        print(newest)
         return int(newest)
     except urllib.error.URLError:
         print('Network Error')
@@ -87,7 +102,7 @@ elif position > 0:
     ll = int(number[0:position])
     ul = int(number[position+1:len(number)])
     if ul>ll and ul <= (latest()) and ll>0:
-        for i in range(ll,ul):
+        for i in range(ll,ul+1):
             if i != 404:
                 f(str(i))
             else:
