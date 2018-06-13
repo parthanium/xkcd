@@ -17,24 +17,29 @@ def cleanhtml(raw_html):
 
 def f(n):
     try:
-        page = 'http://xkcd.com/' + n + '/'
-        response = urllib.request.urlopen(page)
-        text = str(response.read())
+
         #Now finding the link of the comic on the page
-        if n=='404':
+        if str(n)=="404":
             print("404: comic not found!")
             link='https://www.explainxkcd.com/wiki/images/9/92/not_found.png'
             title='404'
+            return
         else:
+            page = 'http://xkcd.com/' + n + '/'
+            response = urllib.request.urlopen(page)
+            text = str(response.read())
             if n=='1037':
                 print("UMWELT")
                 link='https://www.explainxkcd.com/wiki/images/f/ff/umwelt_the_void.jpg'
+                return
             elif n=='1608':
-                print("Hoverboard game - downloading PNG snapshot")
+                print("1608 Hoverboard game")
                 link='https://www.explainxkcd.com/wiki/images/4/41/hoverboard.png'
+                return
             elif n=='1663':
-                print("Garden - downloading PNG snapshot")
+                print("1663 Garden")
                 link='https://www.explainxkcd.com/wiki/images/c/ce/garden.png'
+                return
             else:
                 ls = text.find('embedding')
                 le = text.find('<div id="transcript"')
@@ -45,7 +50,7 @@ def f(n):
             title = text[ts+8:te-8]
             title = cleanhtml(title)
             title = re.sub("[/]",'_',title)
-        link=re.sub(re.compile(".*http[s]*://",re.I),'https://',link)
+            link=re.sub(re.compile(".*http[s]*://",re.I),'https://',link)
         print("Link: {0}".format(link))
         if link[-4:-3]=='.':
             ext=link[-4:]
@@ -118,12 +123,12 @@ else:
     try:
         if 1 <= int(number) <= (latest()):
             #Calling the function for a direct input
-            f(number)
+            f(str(number))
         elif int(number) > (latest()):
             print('Not yet published ...')
         elif int(number) <= 0:
-            print('Enter a number between 1 and the latest ...')        
+            print('Enter a number between 1 and the latest ...')
     except ValueError:
             print('Invalid input')
-    
+
 x = input('\nPress Enter to exit ...')
