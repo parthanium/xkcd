@@ -131,4 +131,5 @@ else:
     except ValueError:
             print('Invalid input')
 
-x = input('\nPress Enter to exit ...')
+#x = input('\nPress Enter to exit ...')
+print("Download complete")
