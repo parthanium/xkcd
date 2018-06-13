@@ -16,6 +16,10 @@ def cleanhtml(raw_html):
     return cleantext
 
 def f(n):
+    # n is expected to be an int, convert to str
+    if int(n) <= 0:
+        exit("{0} is not a valid comic number")
+    n=str(int(n)) # to be really sure
     try:
 
         #Now finding the link of the comic on the page
@@ -97,15 +101,15 @@ except OSError:
 position = number.find('-')
 
 if number == 'latest' or number == '':
-    f(str(latest()))
+    f(latest())
 elif number == 'first':
-    f(str(1))
+    f(1)
 elif number == 'random':
     val = str(random.randint(1, latest()))
-    f(str(latest()))
+    f(val)
 elif number == 'all':
     for o in range(1,latest()):
-        f(str(o))
+        f(o)
             
 elif position > 0:
     #For the range input
@@ -113,7 +117,7 @@ elif position > 0:
     ul = int(number[position+1:len(number)])
     if ul>ll and ul <= (latest()) and ll>0:
         for i in range(ll,ul+1):
-            f(str(i))
+            f(i)
             
     elif ul>(latest()) or ll <=0:
         print('Invalid range ...')
@@ -123,7 +127,7 @@ else:
     try:
         if 1 <= int(number) <= (latest()):
             #Calling the function for a direct input
-            f(str(number))
+            f(number)
         elif int(number) > (latest()):
             print('Not yet published ...')
         elif int(number) <= 0:
