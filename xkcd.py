@@ -1,15 +1,22 @@
 import urllib.request,os,random,tkinter.filedialog
-import re
-print('Romance,Sarcasm,Math and Language\nWelcome to xkcd Downloader 1.0\n\nAccepted Inputs :')
-print('all : downloads all xkcd comics from the beginning to the latest one')
-print('first : downloads the first xkcd comic')
-print('latest : downloads the latest xkcd comic')
-print('random : downloads a random xkcd comic')
-print('[Any number] : downloads the xkcd comic of that number',' ','Example:67')
-print('[Range] : downloads the xkcd comics in that range',' ','Example:5-19')
-print('If no input is given : downloads the latest xkcd comic by default')
-print('\nYou can also specify the directory you want to download the comic(s) to.')
-print('Default directory is the current working directory.\n')
+import re, argparse
+
+description = '''Romance,Sarcasm,Math and Language
+Welcome to xkcd Downloader 1.0
+'''
+argument_description='''
+Accepted Inputs :
+all : downloads all xkcd comics from the beginning to the latest one
+first : downloads the first xkcd comic
+latest : downloads the latest xkcd comic
+random : downloads a random xkcd comic
+[Any number] : downloads the xkcd comic of that number',' ','Example:67
+[Range] : downloads the xkcd comics in that range',' ','Example:5-19
+If no input is given : downloads the latest xkcd comic by default
+\nYou can also specify the directory you want to download the comic(s) to.
+Default directory is the current working directory.
+'''
+
 def cleanhtml(raw_html):
     cleanr = re.compile('<.*?>')
     cleantext = re.sub(cleanr, '', raw_html)
@@ -53,7 +60,9 @@ def f(n):
             te = text.find('<ul class="comicNav"')
             title = text[ts+8:te-8]
             title = cleanhtml(title)
+            # Remove any title characters that can't be in a filename
             title = re.sub("[/]",'_',title)
+            # Clear any additional text before HTTP
             link=re.sub(re.compile(".*http[s]*://",re.I),'https://',link)
         print("Link: {0}".format(link))
         if link[-4:-3]=='.':
@@ -77,7 +86,7 @@ def latest():
         ns = content.find('this comic:')
         ne = content.find('<br />\\nImage URL')
         newest = re.sub('[^\d]','',content[ns+28:ne-1])
-        print(newest)
+        #print(newest)
         return int(newest)
     except urllib.error.URLError:
         print('Network Error')
@@ -85,12 +94,33 @@ def latest():
         exit()
         return 0
 
+# Load optional command line arguments with argparse
+epilog=argument_description
+parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,description=description,epilog=epilog)
+parser.add_argument("--nogui",default=False,action="store_true",help="use text only input and automatically exit on completion")
+parser.add_argument('--dest',default=False, help="destination directory")
+parser.add_argument("--comic",default=False,action="store", help="see accepted inputs below")
+options = parser.parse_args()
+
+print(description)
+
 print('Latest comic number : '+ str(latest()) + '\n')
 #Taking the input
-number = str(input('Enter the xkcd comic number : '))
+if options.comic:
+    number=options.comic
+else:
+    print(argument_description)
+    number = str(input('Enter the xkcd comic number : '))
+
 #Taking the download directory
-print('Choose the directory to download the files to : ')
-dir = tkinter.filedialog.askdirectory()
+if options.dest:
+    dir=os.path.abspath(options.dest)
+else:
+    if options.nogui:
+        dir = str(input('Enter a destination directory : '))
+    else:
+        print('Choose the directory to download the files to : ')
+        dir = tkinter.filedialog.askdirectory()
 try:
     os.chdir(dir)
 except OSError:
@@ -135,5 +165,7 @@ else:
     except ValueError:
             print('Invalid input')
 
-#x = input('\nPress Enter to exit ...')
-print("Download complete")
+if options.nogui:
+    print("Download complete")
+else:
+    x = input('\nPress Enter to exit ...')
